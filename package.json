@@ -1,0 +1,38 @@
+{
+  "name": "neuro-music-player",
+  "version": "1.0.0",
+  "description": "Modern music player for Neuro, Evil, and Duet songs",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder",
+    "dist": "electron-builder --publish=never"
+  },
+  "keywords": ["music", "player", "neuro", "electron"],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^25.0.0",
+    "electron-builder": "^24.0.0"
+  },
+  "dependencies": {
+    "googleapis": "^126.0.1",
+    "node-id3": "^0.2.6",
+    "music-metadata": "^8.1.4"
+  },
+  "build": {
+    "appId": "com.neuromusicplayer.app",
+    "productName": "Neuro Music Player",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "**/*",
+      "!node_modules/electron-builder/**/*"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    }
+  }
+}

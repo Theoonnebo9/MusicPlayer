@@ -1,0 +1,86 @@
+{
+  "app": {
+    "name": "Neuro Music Player",
+    "version": "1.0.0",
+    "author": "Neuro Music Player Team"
+  },
+  "window": {
+    "width": 1400,
+    "height": 900,
+    "minWidth": 1000,
+    "minHeight": 700,
+    "backgroundColor": "#121212"
+  },
+  "audio": {
+    "defaultVolume": 70,
+    "equalizerEnabled": true,
+    "crossfadeDuration": 500
+  },
+  "googleDrive": {
+    "folders": {
+      "neuro": "118gr4QuaGQGKfJ0X8VBCytvPjdzPayPY",
+      "evil": "16WT3-_bOG2I50YS9eBwNK9W99Uh-QhwK", 
+      "duet": "16XWYR_-i0vAvKkmI9a77ZLiZTp20WHjs"
+    },
+    "syncInterval": 3600000,
+    "autoSync": false
+  },
+  "seasonal": {
+    "holidayMode": true,
+    "seasons": {
+      "winter": {
+        "months": [12, 1, 2],
+        "playlist": "winter_music"
+      },
+      "halloween": {
+        "months": [10],
+        "playlist": "halloween_music"
+      },
+      "christmas": {
+        "months": [12],
+        "startDay": 15,
+        "playlist": "christmas_music"
+      },
+      "summer": {
+        "months": [6, 7, 8],
+        "playlist": "summer_music"
+      }
+    }
+  },
+  "playlists": {
+    "defaultPlaylists": [
+      "favorites",
+      "blocked", 
+      "winter_music",
+      "halloween_music",
+      "christmas_music",
+      "summer_music"
+    ],
+    "directory": "./playlists"
+  },
+  "theme": {
+    "primaryColor": "#1db954",
+    "secondaryColor": "#1ed760",
+    "backgroundColor": "#121212",
+    "surfaceColor": "#1e1e1e",
+    "textColor": "#ffffff",
+    "textSecondaryColor": "#b3b3b3"
+  },
+  "shortcuts": {
+    "playPause": "Space",
+    "previousTrack": "ArrowLeft",
+    "nextTrack": "ArrowRight",
+    "toggleRepeat": "ctrl+r",
+    "search": "ctrl+s",
+    "closeModal": "Escape",
+    "volumeUp": "ArrowUp",
+    "volumeDown": "ArrowDown"
+  },
+  "advanced": {
+    "enableDevTools": false,
+    "logLevel": "info",
+    "autoUpdateCheck": true,
+    "analyticsEnabled": false,
+    "hardwareAcceleration": true
+  }
+}

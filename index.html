@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuro Music Player</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Custom Title Bar -->
+    <div class="title-bar">
+        <div class="title-bar-left">
+            <i class="fas fa-music"></i>
+            <span>Neuro Music Player</span>
+        </div>
+        <div class="title-bar-controls">
+            <button id="minimize-btn"><i class="fas fa-minus"></i></button>
+            <button id="maximize-btn"><i class="fas fa-square"></i></button>
+            <button id="close-btn"><i class="fas fa-times"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="sidebar-section">
+                <h3><i class="fas fa-home"></i> Home</h3>
+                <ul class="nav-list">
+                    <li class="nav-item active" data-section="library">
+                        <i class="fas fa-music"></i> Your Library
+                    </li>
+                    <li class="nav-item" data-section="favorites">
+                        <i class="fas fa-heart"></i> Favorites
+                    </li>
+                    <li class="nav-item" data-section="blocked">
+                        <i class="fas fa-ban"></i> Blocked Songs
+                    </li>
+                    <li class="nav-item" data-section="playlists">
+                        <i class="fas fa-list"></i> Playlists
+                    </li>
+                    <li class="nav-item" data-section="settings">
+                        <i class="fas fa-cog"></i> Settings
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <h3><i class="fas fa-calendar"></i> Seasonal</h3>
+                <ul class="seasonal-list">
+                    <li class="seasonal-item" data-playlist="winter_music">
+                        <i class="fas fa-snowflake"></i> Winter & Christmas
+                    </li>
+                    <li class="seasonal-item" data-playlist="halloween_music">
+                        <i class="fas fa-ghost"></i> Halloween Music
+                    </li>
+                </ul>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="playlist-header">
+                    <h3><i class="fas fa-folder"></i> Playlists</h3>
+                    <button id="create-playlist-btn" title="Create Playlist">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+                <ul id="playlist-list" class="playlist-list"></ul>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Content Header -->
+            <div class="content-header">
+            <div class="search-container">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="Search for songs, artists...">
+            </div>
+            
+            <!-- NEW: Artist Filter Dropdown -->
+            <div class="artist-filter-container">
+                <div class="artist-filter-dropdown">
+                <button id="artist-filter-btn" class="artist-filter-btn">
+                    <i class="fas fa-user-music"></i>
+                    <span id="artist-filter-text">All Artists</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div id="artist-filter-menu" class="artist-filter-menu">
+                    <div class="filter-option">
+                    <label>
+                        <input type="checkbox" value="Neuro" id="filter-neuro" checked>
+                        <span class="checkmark"></span>
+                        <i class="fas fa-robot artist-icon neuro-icon"></i>
+                        Neuro
+                    </label>
+                    </div>
+                    <div class="filter-option">
+                    <label>
+                        <input type="checkbox" value="Evil" id="filter-evil" checked>
+                        <span class="checkmark"></span>
+                        <i class="fas fa-ghost artist-icon evil-icon"></i>
+                        Evil
+                    </label>
+                    </div>
+                    <div class="filter-option">
+                    <label>
+                        <input type="checkbox" value="Duet" id="filter-duet" checked>
+                        <span class="checkmark"></span>
+                        <i class="fas fa-users artist-icon duet-icon"></i>
+                        Duet
+                    </label>
+                    </div>
+                    <div class="filter-actions">
+                    <button id="select-all-artists" class="filter-action-btn">
+                        <i class="fas fa-check-double"></i> Select All
+                    </button>
+                    <button id="clear-all-artists" class="filter-action-btn">
+                        <i class="fas fa-times"></i> Clear All
+                    </button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            </div>
+
+            <!-- Current Singer Display -->
+            <div class="current-singer">
+                <img id="singer-image" src="" alt="Current Singer" class="singer-image">
+                <div class="singer-info">
+                    <h2 id="singer-name">Select a song</h2>
+                    <p id="song-date">—</p>
+                </div>
+            </div>
+
+            <!-- Song List -->
+            <div class="song-list-container">
+                <div class="song-list-header">
+                    <!-- FIXED: Renamed #Title to Name and made clickable -->
+                    <div class="column-header title-column clickable-header" onclick="sortSongsByName()">
+                        <i class="fas fa-sort"></i> Name
+                    </div>
+                    <div class="column-header artist-column">Artist</div>
+                    <!-- FIXED: Added clickable date sorting -->
+                    <div class="column-header date-column clickable-header" onclick="sortSongsByDate()">
+                        <i class="fas fa-sort"></i> Date
+                    </div>
+                    <div class="column-header actions-column">Actions</div>
+                </div>
+                <div id="song-list" class="song-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Player Controls -->
+    <div class="player-controls">
+        <div class="player-left">
+            <img id="player-cover" src="" alt="Album Cover" class="player-cover">
+            <div class="player-info">
+                <div id="player-title">No song selected</div>
+                <div id="player-artist">—</div>
+            </div>
+            <div class="player-actions">
+                <button id="favorite-btn" class="action-btn">
+                    <i class="far fa-heart"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="player-center">
+            <!-- FIXED: Added shuffle button to player controls -->
+            <div class="player-buttons">
+                <button id="shuffle-btn"><i class="fas fa-random"></i></button>
+                <button id="prev-btn"><i class="fas fa-step-backward"></i></button>
+                <button id="play-btn" class="play-btn"><i class="fas fa-play"></i></button>
+                <button id="next-btn"><i class="fas fa-step-forward"></i></button>
+                <button id="repeat-btn"><i class="fas fa-repeat"></i></button>
+            </div>
+            <div class="progress-container">
+                <span id="current-time">0:00</span>
+                <div class="progress-bar">
+                    <div id="progress" class="progress"></div>
+                    <input type="range" id="progress-slider" min="0" max="100" value="0">
+                </div>
+                <span id="duration">0:00</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <button id="queue-btn"><i class="fas fa-list-ul"></i></button>
+            <button id="equalizer-btn"><i class="fas fa-sliders-h"></i></button>
+            <div class="volume-container">
+                <button id="volume-btn"><i class="fas fa-volume-up"></i></button>
+                <div class="volume-slider">
+                    <input type="range" id="volume-slider" min="0" max="100" value="70">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Equalizer Modal -->
+    <div id="equalizer-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-sliders-h"></i> Equalizer</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="equalizer-content">
+                <div class="equalizer-presets">
+                    <select id="eq-preset">
+                        <option value="flat">Flat</option>
+                        <option value="custom">Custom</option>
+                        <option value="acoustic">Acoustic</option>
+                        <option value="bass-booster">Bass Booster</option>
+                        <option value="bass-reducer">Bass Reducer</option>
+                        <option value="classical">Classical</option>
+                        <option value="dance">Dance</option>
+                        <option value="deep">Deep</option>
+                        <option value="electronic">Electronic</option>
+                        <option value="hip-hop">Hip-Hop</option>
+                        <option value="jazz">Jazz</option>
+                        <option value="latin">Latin</option>
+                        <option value="loudness">Loudness</option>
+                        <option value="lounge">Lounge</option>
+                        <option value="piano">Piano</option>
+                        <option value="pop">Pop</option>
+                        <option value="rnb">R&B</option>
+                        <option value="rock">Rock</option>
+                        <option value="small-speakers">Small Speakers</option>
+                        <option value="spoken-word">Spoken Word</option>
+                        <option value="treble-booster">Treble Booster</option>
+                        <option value="treble-reducer">Treble Reducer</option>
+                        <option value="vocal-booster">Vocal Booster</option>
+                    </select>
+                </div>
+                <div class="equalizer-bands">
+                    <div class="eq-band">
+                        <label>60Hz</label>
+                        <input type="range" class="eq-slider" data-freq="60" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>170Hz</label>
+                        <input type="range" class="eq-slider" data-freq="170" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>310Hz</label>
+                        <input type="range" class="eq-slider" data-freq="310" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>600Hz</label>
+                        <input type="range" class="eq-slider" data-freq="600" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>1kHz</label>
+                        <input type="range" class="eq-slider" data-freq="1000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>3kHz</label>
+                        <input type="range" class="eq-slider" data-freq="3000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>6kHz</label>
+                        <input type="range" class="eq-slider" data-freq="6000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>12kHz</label>
+                        <input type="range" class="eq-slider" data-freq="12000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>14kHz</label>
+                        <input type="range" class="eq-slider" data-freq="14000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                    <div class="eq-band">
+                        <label>16kHz</label>
+                        <input type="range" class="eq-slider" data-freq="16000" min="-12" max="12" value="0" orient="vertical">
+                        <span class="eq-value">0dB</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-cog"></i> Settings</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="settings-content">
+                <div class="setting-group">
+                    <h3>Console Window</h3>
+                    <label class="setting-item">
+                        <input type="checkbox" id="show-console">
+                        <span>Show Console Window (requires restart)</span>
+                    </label>
+                    <p class="setting-description">
+                        Enable this to show the developer console for debugging. 
+                        The application will restart to apply this setting.
+                    </p>
+                </div>
+                <div class="setting-group">
+                    <h3>Holiday Music</h3>
+                    <label class="setting-item">
+                        <input type="checkbox" id="holiday-mode">
+                        <span>Enable Holiday Mode (filter seasonal music when out of season)</span>
+                    </label>
+                    <p class="setting-description">
+                        When enabled, songs in seasonal playlists (Winter & Christmas, Halloween) 
+                        will be hidden from Your Library and other playlists when it's not their season.
+                        Seasonal playlists themselves remain accessible year-round.
+                    </p>
+                    <div class="current-season-info">
+                        <small id="season-info">Loading season info...</small>
+                    </div>
+                    <div class="holiday-status">
+                        <small id="holiday-status">Holiday filtering status...</small>
+                    </div>
+                    <button id="test-seasonal-btn" class="import-btn" style="margin-top: 12px;">
+                        <i class="fas fa-vial"></i> Test Seasonal Playlists
+                    </button>
+                </div>
+                <div class="setting-group">
+                    <h3>Music Folders</h3>
+                    <button id="import-music-btn" class="import-btn">
+                        <i class="fas fa-folder-open"></i> Import Music Folder
+                    </button>
+                </div>
+                <div class="setting-group">
+                    <h3>Google Drive Sync</h3>
+                    <button id="sync-drive-btn" class="sync-btn">
+                        <i class="fab fa-google-drive"></i> Sync with Google Drive
+                    </button>
+                </div>
+                <div class="setting-group">
+                    <h3>Application Settings</h3>
+                    <button id="reset-settings-btn" class="import-btn" style="background: #e22134; border-color: #e22134; margin-top: 12px;">
+                        <i class="fas fa-undo"></i> Reset All Settings
+                    </button>
+                    <p style="font-size: 12px; color: #b3b3b3; margin-top: 8px;">
+                        This will reset all preferences, equalizer settings, and window position to defaults.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Playlist Modal -->
+    <div id="create-playlist-modal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus"></i> Create Playlist</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="create-playlist-content">
+                <input type="text" id="playlist-name-input" placeholder="Enter playlist name..." maxlength="50">
+                <div class="modal-buttons">
+                    <button id="cancel-playlist-btn" class="cancel-btn">Cancel</button>
+                    <button id="create-playlist-confirm-btn" class="confirm-btn">Create</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add to Playlist Modal -->
+    <div id="add-to-playlist-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-plus"></i> Add to Playlist</h2>
+                <button class="close-btn">&times;</button>
+            </div>
+            <div class="add-to-playlist-content">
+                <div class="song-info-display">
+                    <div class="selected-song-title">Song Title</div>
+                    <div class="selected-song-artist">Artist</div>
+                </div>
+                
+                <div class="playlist-categories">
+                    <div class="playlist-category">
+                        <h3><i class="fas fa-calendar"></i> Seasonal Playlists</h3>
+                        <div class="playlist-grid">
+                            <div class="playlist-option" data-playlist="winter_music">
+                                <i class="fas fa-snowflake"></i>
+                                <span>Winter Music</span>
+                                <div class="playlist-checkbox">
+                                    <input type="checkbox" id="winter_check">
+                                    <label for="winter_check"></label>
+                                </div>
+                            </div>
+                            <div class="playlist-option" data-playlist="halloween_music">
+                                <i class="fas fa-ghost"></i>
+                                <span>Halloween Music</span>
+                                <div class="playlist-checkbox">
+                                    <input type="checkbox" id="halloween_check">
+                                    <label for="halloween_check"></label>
+                                </div>
+                            </div>
+                            <div class="playlist-option" data-playlist="christmas_music">
+                                <i class="fas fa-tree"></i>
+                                <span>Christmas Music</span>
+                                <div class="playlist-checkbox">
+                                    <input type="checkbox" id="christmas_check">
+                                    <label for="christmas_check"></label>
+                                </div>
+                            </div>
+                            <div class="playlist-option" data-playlist="summer_music">
+                                <i class="fas fa-sun"></i>
+                                <span>Summer Music</span>
+                                <div class="playlist-checkbox">
+                                    <input type="checkbox" id="summer_check">
+                                    <label for="summer_check"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="playlist-category">
+                        <h3><i class="fas fa-heart"></i> Special Playlists</h3>
+                        <div class="playlist-grid">
+                            <div class="playlist-option" data-playlist="favorites">
+                                <i class="fas fa-heart"></i>
+                                <span>Favorites</span>
+                                <div class="playlist-checkbox">
+                                    <input type="checkbox" id="favorites_check">
+                                    <label for="favorites_check"></label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="playlist-category">
+                        <h3><i class="fas fa-folder"></i> Custom Playlists</h3>
+                        <div id="custom-playlists-grid" class="playlist-grid">
+                            <!-- Custom playlists will be populated here -->
+                        </div>
+                        <button id="create-new-playlist-btn" class="create-new-btn">
+                            <i class="fas fa-plus"></i> Create New Playlist
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-buttons">
+                    <button id="cancel-add-playlist-btn" class="cancel-btn">Cancel</button>
+                    <button id="confirm-add-playlist-btn" class="confirm-btn">Add to Selected</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Audio Element -->
+    <audio id="audio-player" preload="none"></audio>
+
+    <!-- Scripts -->
+    <script src="renderer.js"></script>
+</body>
+</html>
